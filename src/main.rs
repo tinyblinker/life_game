@@ -1,7 +1,4 @@
-use std::{
-    thread,
-    time::Duration,
-};
+use std::{thread, time::Duration};
 
 // alive: true->alive, false->dead
 struct MyCell {
