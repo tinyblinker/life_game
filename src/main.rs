@@ -100,9 +100,8 @@ fn update_mycells(arr: &mut Vec<Vec<MyCell>>) -> () {
     }
 }
 
-fn flush_the_screen() -> () {
+fn clean_the_screen() -> () {
     print!("\x1B[2J\x1B[H");
-    io::stdout().flush().unwrap();
 }
 
 fn draw_the_gun(arr: &mut Vec<Vec<MyCell>>) -> () {
@@ -171,7 +170,7 @@ fn main() {
     loop {
         draw(&arr);
         thread::sleep(Duration::from_secs_f32(0.15));
-        flush_the_screen();
+        clean_the_screen();
         update_alive_around_count(&mut arr);
         update_mycells(&mut arr);
     }
