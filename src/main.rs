@@ -7,10 +7,7 @@ use std::{
 // alive: true->alive, false->dead
 struct MyCell {
     is_alive: bool,
-    cols: usize,
-    rows: usize,
     alive_around_cnt: usize,
-    is_father: bool,
 }
 
 // draw the current cells' status
@@ -25,17 +22,6 @@ fn draw(arr: &Vec<Vec<MyCell>>) -> () {
         print!("\n");
     }
 }
-
-// set alive cells (fathers)
-// fn set_fathers_alive(arr: &mut Vec<Vec<MyCell>>, cols: usize, rows: usize) -> () {
-//     let direction: [(i32, i32); 4] = [(0, 0), (1, 0), (0, 1), (1, 1)];
-//     for (dc, dr) in direction {
-//         let p_cols: usize = (cols as i32 + dc) as usize;
-//         let p_rows: usize = (rows as i32 + dr) as usize;
-//         arr[p_cols][p_rows].is_alive = true;
-//         arr[p_cols][p_rows].is_father = true;
-//     }
-// }
 
 // set alive cells (seeds)
 fn set_seeds_alive(arr: &mut Vec<Vec<MyCell>>, cols: usize, rows: usize) -> () {
@@ -96,9 +82,6 @@ fn update_mycells(arr: &mut Vec<Vec<MyCell>>) -> () {
     let max_rows: usize = arr[0].len() - 1;
     for i in 0..max_cols {
         for j in 0..max_rows {
-            if arr[i][j].is_father {
-                continue;
-            }
             match arr[i][j].is_alive {
                 true => {
                     if arr[i][j].alive_around_cnt < 2 {
@@ -120,7 +103,6 @@ fn update_mycells(arr: &mut Vec<Vec<MyCell>>) -> () {
 fn flush_the_screen() -> () {
     print!("\x1B[2J\x1B[H");
     io::stdout().flush().unwrap();
-    // thread::sleep(Duration::from_secs_f32(0.1)); // test ok!
 }
 
 fn draw_the_gun(arr: &mut Vec<Vec<MyCell>>) -> () {
@@ -172,35 +154,24 @@ fn main() {
     let cols: usize = 40;
     let rows: usize = 100;
     let mut arr: Vec<Vec<MyCell>> = (0..cols)
-        .map(|p_cols| {
+        .map(|_| {
             (0..rows)
-                .map(|p_rows| MyCell {
+                .map(|_| MyCell {
                     is_alive: false,
-                    cols: p_cols,
-                    rows: p_rows,
                     alive_around_cnt: 0,
-                    is_father: false,
                 })
                 .collect()
         })
         .collect();
-    // functions to process
-    // set_fathers_alive(&mut arr, 10, 10); // test ok!
-    // set_fathers_alive(&mut arr, 25, 40); // test ok!
-    // set_seeds_alive(&mut arr, 12, 12);
-    // set_seeds_alive(&mut arr, 12, 14);
-    // set_seeds_alive(&mut arr, 13, 15);
-    // set_seeds_alive(&mut arr, 14, 15);
-    // set_seeds_alive(&mut arr, 15, 12);
-    // set_seeds_alive(&mut arr, 15, 15);
-    // set_seeds_alive(&mut arr, 16, 13);
-    // set_seeds_alive(&mut arr, 16, 14);
-    // set_seeds_alive(&mut arr, 16, 15);
-    draw_the_gun(&mut arr); // draw the gun
+
+    // draw the gun
+    draw_the_gun(&mut arr);
+
+    // start the main loop
     loop {
-        draw(&arr); // test ok!
-        thread::sleep(Duration::from_secs_f32(0.15)); // test ok!
-        flush_the_screen(); // test ok!
+        draw(&arr);
+        thread::sleep(Duration::from_secs_f32(0.15));
+        flush_the_screen();
         update_alive_around_count(&mut arr);
         update_mycells(&mut arr);
     }
